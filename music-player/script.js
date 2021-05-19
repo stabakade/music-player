@@ -2,6 +2,10 @@ const image = document.querySelector('img');
 const title = document.getElementById('title');
 const artist = document.getElementById('artist');
 const music = document.querySelector('audio');
+const progressContainer = document.getElementById('progress-container');
+const progress = document.getElementById('progress');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
 const prevBtn = document.getElementById('prev');
 const playBtn = document.getElementById('play');
 const nextBtn = document.getElementById('next');
@@ -77,6 +81,51 @@ function nextSong() {
 // on load select first song
 loadSong(songs[songIndex]);
 
+// Update progress bar and time
+function updateProgressBar(e) {
+    if(isPlaying) {
+        // console.log(e);  
+        const { duration, currentTime } = e.srcElement;
+        // console.log(duration, currentTime);
+
+        // update progress bar
+        const progressPercent = (currentTime / duration ) * 100;
+        progress.style.width = `${progressPercent}%`;
+
+        // calculate duration display 
+        const durationMinutes = Math.floor(duration / 60);
+        // console.log(durationMinutes);
+        let durationSeconds = Math.floor(duration % 60);
+        if(durationSeconds < 10) {
+            durationSeconds = `0${durationSeconds}`;
+        }
+        // console.log(durationSeconds);
+        // durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+        // delay switching duration element to avoid Nan
+        if (durationSeconds) {
+            durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+
+        }
+
+        // calculate duration display 
+        const currentMinutes = Math.floor(currentTime / 60);
+        // console.log(currentMinutes);
+        let currentSeconds = Math.floor(currentTime % 60);
+        if(currentSeconds < 10) {
+            currentSeconds = `0${currentSeconds}`;
+        }
+        // console.log(durationSeconds);
+        // durationEl.textContent = `${durationMinutes}:${durationSeconds}`;
+        // delay switching duration element to avoid Nan
+        if (currentSeconds) {
+            currentTimeEl.textContent = `${currentMinutes}:${currentSeconds}`;
+
+        }
+
+    }
+}
+
 // event listeners
 prevBtn.addEventListener('click', prevSong);
 nextBtn.addEventListener('click', nextSong);
+music.addEventListener('timeupdate', updateProgressBar);
